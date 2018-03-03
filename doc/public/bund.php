@@ -1,0 +1,68 @@
+<?php
+require_once("../includes/header.php");
+if(!isset($_SESSION["u_id"]))
+{
+	require_once("../includes/functions.php");
+	redto("../login.php");
+}
+else
+{
+	require_once("../includes/functions.php");
+	require_once("../includes/menu.php");
+	$connection=connectDb();
+	$u_id=$_SESSION["u_id"];
+	$query="SELECT u_fullName,u_name FROM `user` WHERE user.u_id='$u_id'";
+	$result=runQuery($connection, $query);
+	$row=mysqli_fetch_assoc($result);
+	$u_name=$row['u_name'];
+	$u_fullName=$row['u_fullName'];
+?>
+<div class="well container">
+	<div style="text-align: center; width: 300px; padding-bottom: 30px" class="container">
+		<p class=" well">User Full Name : <?php echo "$u_fullName";?></p>
+		<p class=" well">User Name : <?php echo "$u_name";?></p>
+	</div>
+	<div class="col-md-12 content">
+		<div>
+			<form class="form-inline" method="post"  >
+				<table  id="example" class="table table-striped">
+					<thead>
+						<tr>
+							<th>Bundle Serial</th>
+							<th>Company Name</th>
+							<th>Ticket Number</th>
+							<th>Bundle Date</th>
+						</tr>
+					</thead>
+				</thead>
+			<tbody>
+	<?php
+	$query="SELECT * FROM `bundle` where bundle.u_id='$u_id'";
+	$result=mysqli_query($connection, $query);
+	while($row=mysqli_fetch_assoc($result))
+	{
+	?>
+			<tr>
+				<form action="" method="POST">
+					<td><?php echo $row['b_no']?></td>
+					<td><?php echo $row['b_comName']?></td>
+					<td><?php echo $row['b_tickNum']?></td>
+					<td><?php echo $row['b_date']?></td>
+			</tr>
+				</form>
+	<?php
+	}
+	?>
+			</tbody>
+
+				</table>
+			</form>
+	 	</div>
+	</div>
+</div>
+<?php
+	
+	mysqli_close($connection);
+	require_once("../includes/footer.php");
+}
+?>
